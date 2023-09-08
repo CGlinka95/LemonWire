@@ -45,7 +45,7 @@ namespace LemonWire
             return returnList;
         }
 
-        //Get all ALBUM_NAMES that match the search bar input...
+        //Get ALL ALBUM_NAMES that match the search bar input...
         public List<Album> SearchTitles(String searchInput)
         {
             //Start with an empty list
@@ -83,6 +83,33 @@ namespace LemonWire
             connection.Close();
 
             return returnList;
+        }
+
+        //INSERT album in to the database (albums table)...
+        internal int AddOneAlbum(Album album)
+        {
+            //Connect to the mysql server
+            MySqlConnection connection = new MySqlConnection(connectionString);
+            connection.Open();
+
+            //Define the sql statement to INSERT an album
+            MySqlCommand command = new MySqlCommand("INSERT INTO `albums` (`ALBUM_TITLE`, `ARTIST`, `YEAR`, `IMAGE_NAME`, `DESCRIPTION`) VALUES (@albumTitle, @artist, @year, @imageName, @description)",
+                connection);
+
+            command.Parameters.AddWithValue("@albumTitle", album.AlbumName);
+            command.Parameters.AddWithValue("@artist", album.ArtistName);
+            command.Parameters.AddWithValue("@year", album.ReleaseYear);
+            command.Parameters.AddWithValue("@imageName", album.ImageURL);
+            command.Parameters.AddWithValue("@description", album.Description);
+
+            //ExecuteNonQuery = Executes an SQL statement against the connection and returns the number of rows affected
+            int newRows = command.ExecuteNonQuery();
+
+            //Close connection
+            connection.Close();
+
+            //Return the new rows
+            return newRows;
         }
     }
 }

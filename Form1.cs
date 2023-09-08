@@ -24,6 +24,20 @@ namespace LemonWire
             pictureBox1.Load("https://upload.wikimedia.org/wikipedia/en/3/3b/Tool-Opiate.jpg");
         }
 
+        //Click event to fetch ALL allbums in the database...
+        private void button3_Click(object sender, EventArgs e)
+        {
+            AlbumsDAO albumsDAO = new AlbumsDAO();
+
+            //Connect the list to the grid view control
+            albumBindingSource.DataSource = albumsDAO.GetAllAlbums();
+
+            dataGridView1.DataSource = albumBindingSource;
+
+            //Load image from the internet using a pictureBox and URL
+            pictureBox1.Load("https://upload.wikimedia.org/wikipedia/en/3/3b/Tool-Opiate.jpg");
+        }
+
         //Search Button functionality...
         private void button1_Click(object sender, EventArgs e)
         {
@@ -52,6 +66,24 @@ namespace LemonWire
             //MessageBox.Show("URL=" + imageURL);
 
             pictureBox1.Load(imageURL);
+        }
+
+        //Click event to add album information to the database...
+        private void button2_Click(object sender, EventArgs e)
+        {
+            //Add a new item to the database
+            Album album = new Album
+            {
+                AlbumName = txt_albumTitle.Text,
+                ArtistName = txt_artist.Text,
+                ReleaseYear = Int32.Parse(txt_releaseYear.Text),
+                ImageURL = txt_imageURL.Text,
+                Description = txt_description.Text,
+            };
+
+            AlbumsDAO albumsDAO = new AlbumsDAO();
+            int result = albumsDAO.AddOneAlbum(album);
+            MessageBox.Show(result + " new row(s) inserted.");
         }
     }
 }

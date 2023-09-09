@@ -73,7 +73,7 @@ namespace LemonWire
 
             //Connect the list to the grid view control
             //Look for the rowClicked variable from line 59 and explicitly cast it to an int so that we can use the result
-            songBindingSource.DataSource = albumsDAO.GetSongsForAlbum((int)dataGridView.Rows[rowClicked].Cells[0].Value);
+            songBindingSource.DataSource = albumsDAO.GetSongsUsingJoin((int)dataGridView.Rows[rowClicked].Cells[0].Value);
 
             dataGridView2.DataSource = songBindingSource;
         }

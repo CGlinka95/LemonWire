@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using Newtonsoft.Json.Linq;
 
 namespace LemonWire
 {
@@ -23,7 +24,7 @@ namespace LemonWire
             MySqlCommand command = new MySqlCommand("SELECT ID, ALBUM_TITLE, ARTIST, YEAR, IMAGE_NAME, DESCRIPTION FROM ALBUMS",
                 connection);
 
-            using (MySqlDataReader reader = command.ExecuteReader()) //MySqlDataReader is the RESULT of executing the command that is defined in line 22.
+            using (MySqlDataReader reader = command.ExecuteReader()) //MySqlDataReader is the RESULT of executing the command that is defined in line 24.
             {
                 //Loop until all Albums have been retrieved from the list
                 while(reader.Read())
@@ -62,7 +63,7 @@ namespace LemonWire
             command.Parameters.AddWithValue("@search", searchPhrase);
             command.Connection = connection;
 
-            using (MySqlDataReader reader = command.ExecuteReader()) //MySqlDataReader is the RESULT of executing the command that is defined in line 22.
+            using (MySqlDataReader reader = command.ExecuteReader())
             {
                 //Loop until all Albums have been retrieved from the list
                 while (reader.Read())
@@ -128,9 +129,9 @@ namespace LemonWire
             command.Parameters.AddWithValue("@albumID", albumID);
             command.Connection = connection;
 
-            using (MySqlDataReader reader = command.ExecuteReader()) //MySqlDataReader is the RESULT of executing the command that is defined in line 22.
+            using (MySqlDataReader reader = command.ExecuteReader())
             {
-                //Loop until all Albums have been retrieved from the list
+                //Loop until all Songs have been retrieved from the list
                 while (reader.Read())
                 {
                     Song songInList = new Song
@@ -142,6 +143,48 @@ namespace LemonWire
                         Lyrics = reader.GetString(4),
                     };
                     returnList.Add(songInList);
+                }
+            }
+            //Best practise to always Close the connection like so...
+            connection.Close();
+
+            return returnList;
+        }
+
+        //This is the better way of fetching songs from the albumID VS the method above ^^^
+        //This method will FETCH ALL songs related to the selected album via a join (see SQL statement below for the example of a join).
+        //This method also uses JObject which represents all items in a list as a JSON object.
+        //I do this because the previous way of pulling data from the database was not going to allow for the increased amount of columns pulled when using a join.
+        public List<JObject> GetSongsUsingJoin(int albumID)
+        {
+            //Start with an empty list
+            List<JObject> returnList = new List<JObject>();
+
+            //Connect to the mysql server
+            MySqlConnection connection = new MySqlConnection(connectionString);
+            connection.Open();
+
+            MySqlCommand command = new MySqlCommand();
+            command.CommandText = "SELECT albums.ALBUM_TITLE AS AlbumTitle, `SONG_TITLE` AS SongTitle, `LYRICS` AS Lyrics FROM `songs` JOIN albums ON albums_ID = albums.ID WHERE albums_ID = @albumID";
+            command.Parameters.AddWithValue("@albumID", albumID);
+            command.Connection = connection;
+
+            using (MySqlDataReader reader = command.ExecuteReader())
+            {
+                //Loop until all JSON objects have been retrieved 
+                while (reader.Read())
+                {
+                    JObject newSong = new JObject();
+
+                    //For each column that is read will be put in to this JObject
+                    //FieldCount tells exactly how many columns that are being read... FLEXABILITY 
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        //Add new properties to "newSong" JObject ****[Property NAME | Property VALUE]****
+                        newSong.Add(reader.GetName(i).ToString(), reader.GetValue(i).ToString());
+                    }
+
+                    returnList.Add(newSong);
                 }
             }
             //Best practise to always Close the connection like so...

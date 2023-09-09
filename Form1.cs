@@ -22,7 +22,7 @@ namespace LemonWire
             dataGridView1.DataSource = albumBindingSource;
 
             //Load image from the internet using a pictureBox and URL
-            pictureBox1.Load("https://upload.wikimedia.org/wikipedia/en/3/3b/Tool-Opiate.jpg");
+            pictureBox1.Load("https://upload.wikimedia.org/wikipedia/en/thumb/8/8e/Opiate_2019.jpg/220px-Opiate_2019.jpg");
         }
 
         //Click event to fetch ALL allbums in the database...

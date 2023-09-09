@@ -165,7 +165,7 @@ namespace LemonWire
             connection.Open();
 
             MySqlCommand command = new MySqlCommand();
-            command.CommandText = "SELECT albums.ALBUM_TITLE AS AlbumTitle, `SONG_TITLE` AS SongTitle, `LYRICS` AS Lyrics FROM `songs` JOIN albums ON albums_ID = albums.ID WHERE albums_ID = @albumID";
+            command.CommandText = "SELECT `NUMBER` AS Track, `SONG_TITLE` AS Song, albums.ALBUM_TITLE AS Album, `LYRICS` AS Lyrics, `LENGTH` AS Duration FROM `songs` JOIN albums ON albums_ID = albums.ID WHERE albums_ID = @albumID";
             command.Parameters.AddWithValue("@albumID", albumID);
             command.Connection = connection;
 

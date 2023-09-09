@@ -31,12 +31,12 @@
             components = new System.ComponentModel.Container();
             bindingSource1 = new BindingSource(components);
             dataGridView1 = new DataGridView();
-            button1 = new Button();
+            searchButton = new Button();
             textBox1 = new TextBox();
             pictureBox1 = new PictureBox();
             groupBox1 = new GroupBox();
-            button3 = new Button();
-            button2 = new Button();
+            loadAlbumsButton = new Button();
+            addAlbumButton = new Button();
             txt_description = new TextBox();
             txt_imageURL = new TextBox();
             txt_releaseYear = new TextBox();
@@ -50,6 +50,7 @@
             label6 = new Label();
             dataGridView2 = new DataGridView();
             label7 = new Label();
+            deleteButton = new Button();
             ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -70,19 +71,19 @@
             dataGridView1.ReadOnly = true;
             dataGridView1.RowTemplate.Height = 25;
             dataGridView1.RowTemplate.ReadOnly = true;
-            dataGridView1.Size = new Size(893, 334);
+            dataGridView1.Size = new Size(639, 334);
             dataGridView1.TabIndex = 1;
             dataGridView1.CellClick += dataGridView1_CellClick;
             // 
-            // button1
+            // searchButton
             // 
-            button1.Location = new Point(260, 12);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 2;
-            button1.Text = "Search";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            searchButton.Location = new Point(260, 12);
+            searchButton.Name = "searchButton";
+            searchButton.Size = new Size(75, 23);
+            searchButton.TabIndex = 2;
+            searchButton.Text = "Search";
+            searchButton.UseVisualStyleBackColor = true;
+            searchButton.Click += searchButton_Click;
             // 
             // textBox1
             // 
@@ -102,8 +103,8 @@
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(button3);
-            groupBox1.Controls.Add(button2);
+            groupBox1.Controls.Add(loadAlbumsButton);
+            groupBox1.Controls.Add(addAlbumButton);
             groupBox1.Controls.Add(txt_description);
             groupBox1.Controls.Add(txt_imageURL);
             groupBox1.Controls.Add(txt_releaseYear);
@@ -121,25 +122,25 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Add Album";
             // 
-            // button3
+            // loadAlbumsButton
             // 
-            button3.Location = new Point(132, 294);
-            button3.Name = "button3";
-            button3.Size = new Size(185, 33);
-            button3.TabIndex = 6;
-            button3.Text = "Load Albums";
-            button3.UseVisualStyleBackColor = true;
-            button3.Click += button3_Click;
+            loadAlbumsButton.Location = new Point(132, 294);
+            loadAlbumsButton.Name = "loadAlbumsButton";
+            loadAlbumsButton.Size = new Size(185, 33);
+            loadAlbumsButton.TabIndex = 6;
+            loadAlbumsButton.Text = "Load Albums";
+            loadAlbumsButton.UseVisualStyleBackColor = true;
+            loadAlbumsButton.Click += loadAlbumsButton_Click;
             // 
-            // button2
+            // addAlbumButton
             // 
-            button2.Location = new Point(6, 294);
-            button2.Name = "button2";
-            button2.Size = new Size(110, 33);
-            button2.TabIndex = 10;
-            button2.Text = "Add";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
+            addAlbumButton.Location = new Point(6, 294);
+            addAlbumButton.Name = "addAlbumButton";
+            addAlbumButton.Size = new Size(110, 33);
+            addAlbumButton.TabIndex = 10;
+            addAlbumButton.Text = "Add";
+            addAlbumButton.UseVisualStyleBackColor = true;
+            addAlbumButton.Click += addAlbumButton_Click;
             // 
             // txt_description
             // 
@@ -236,7 +237,7 @@
             dataGridView2.Location = new Point(341, 399);
             dataGridView2.Name = "dataGridView2";
             dataGridView2.RowTemplate.Height = 25;
-            dataGridView2.Size = new Size(893, 279);
+            dataGridView2.Size = new Size(639, 279);
             dataGridView2.TabIndex = 7;
             // 
             // label7
@@ -248,18 +249,29 @@
             label7.TabIndex = 8;
             label7.Text = "Albums";
             // 
+            // deleteButton
+            // 
+            deleteButton.Location = new Point(871, 684);
+            deleteButton.Name = "deleteButton";
+            deleteButton.Size = new Size(109, 23);
+            deleteButton.TabIndex = 9;
+            deleteButton.Text = "Delete Song";
+            deleteButton.UseVisualStyleBackColor = true;
+            deleteButton.Click += deleteButton_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1246, 690);
+            ClientSize = new Size(1021, 747);
+            Controls.Add(deleteButton);
             Controls.Add(label7);
             Controls.Add(dataGridView2);
             Controls.Add(label6);
             Controls.Add(groupBox1);
             Controls.Add(pictureBox1);
             Controls.Add(textBox1);
-            Controls.Add(button1);
+            Controls.Add(searchButton);
             Controls.Add(dataGridView1);
             Name = "Form1";
             Text = "LemonWire";
@@ -277,7 +289,7 @@
         #endregion
         private BindingSource bindingSource1;
         private DataGridView dataGridView1;
-        private Button button1;
+        private Button searchButton;
         private TextBox textBox1;
         private PictureBox pictureBox1;
         private GroupBox groupBox1;
@@ -291,10 +303,11 @@
         private TextBox txt_albumTitle;
         private TextBox txt_description;
         private TextBox txt_imageURL;
-        private Button button2;
-        private Button button3;
+        private Button addAlbumButton;
+        private Button loadAlbumsButton;
         private Label label6;
         private DataGridView dataGridView2;
         private Label label7;
+        private Button deleteButton;
     }
 }

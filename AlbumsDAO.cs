@@ -141,6 +141,7 @@ namespace LemonWire
                         Number = reader.GetInt32(2),
                         VideoURL = reader.GetString(3),
                         Lyrics = reader.GetString(4),
+                        Length = reader.GetTimeSpan(5),
                     };
                     returnList.Add(songInList);
                 }
@@ -165,7 +166,7 @@ namespace LemonWire
             connection.Open();
 
             MySqlCommand command = new MySqlCommand();
-            command.CommandText = "SELECT `NUMBER` AS Track, `SONG_TITLE` AS Song, albums.ALBUM_TITLE AS Album, `LYRICS` AS Lyrics, `LENGTH` AS Duration FROM `songs` JOIN albums ON albums_ID = albums.ID WHERE albums_ID = @albumID";
+            command.CommandText = "SELECT songs.ID, `NUMBER` AS Track, `SONG_TITLE` AS Song, albums.ALBUM_TITLE AS Album, `LYRICS` AS Lyrics, `LENGTH` AS Duration FROM `songs` JOIN albums ON albums_ID = albums.ID WHERE albums_ID = @albumID";
             command.Parameters.AddWithValue("@albumID", albumID);
             command.Connection = connection;
 
@@ -191,6 +192,47 @@ namespace LemonWire
             connection.Close();
 
             return returnList;
+        }
+
+        //DELETE the selected song from the JObject w/ validation...
+        public void DeleteSong(JObject songData, string connectionString)
+        {
+            //Get the song ID from the JObject
+            int songID = songData["ID"].Value<int>();
+
+            //Create a MySqlConnection
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+
+                //Create a MySqlCommand to delete the song from the database
+                string deleteQuery = "DELETE FROM `songs` WHERE `songs`.`ID` = @songID;";
+                using (MySqlCommand command = new MySqlCommand(deleteQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@songID", songID);
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    //Check if the song was deleted successfully
+                    if (rowsAffected > 0)
+                    {
+                        //Remove the song from the JObject
+                        songData.Remove("ID");
+                        songData.Remove("SongTitle");
+                        songData.Remove("Number");
+                        songData.Remove("VideoURL");
+                        songData.Remove("Lyrics");
+                        songData.Remove("Length");
+
+                        //Write a success message
+                        Console.WriteLine("Song deleted successfully");
+                    }
+                    else
+                    {
+                        //Write an error message
+                        Console.WriteLine("Song not found or could not be deleted");
+                    }
+                }
+            }
         }
     }
 }

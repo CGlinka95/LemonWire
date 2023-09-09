@@ -9,6 +9,7 @@
         public String? ImageURL { get; set; }
         public String? Description { get; set; }
 
-        //Make a List<Track> for songs related to the albums
+        //Additionally, I could make a compound query by adding a List of Songs to this class.
+        //public List<Song>? Songs { get; set; }
     }
 }

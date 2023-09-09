@@ -1,3 +1,6 @@
+using Newtonsoft.Json.Linq;
+using System.Windows.Forms;
+
 namespace LemonWire
 {
     public partial class Form1 : Form
@@ -5,6 +8,8 @@ namespace LemonWire
         //BindingSource is the ability to connect a List of items, such as albums, to the grid control on the frontend.
         BindingSource albumBindingSource = new BindingSource();
         BindingSource songBindingSource = new BindingSource();
+
+        string connectionString = "datasource=localhost; port=3306; username=root; password=root; database=lemonwire";
 
         public Form1()
         {
@@ -22,11 +27,11 @@ namespace LemonWire
             dataGridView1.DataSource = albumBindingSource;
 
             //Load image from the internet using a pictureBox and URL
-            pictureBox1.Load("https://upload.wikimedia.org/wikipedia/en/thumb/8/8e/Opiate_2019.jpg/220px-Opiate_2019.jpg");
+            pictureBox1.Load("https://upload.wikimedia.org/wikipedia/en/3/3b/Tool-Opiate.jpg");
         }
 
         //Click event to fetch ALL allbums in the database...
-        private void button3_Click(object sender, EventArgs e)
+        private void loadAlbumsButton_Click(object sender, EventArgs e)
         {
             AlbumsDAO albumsDAO = new AlbumsDAO();
 
@@ -40,7 +45,7 @@ namespace LemonWire
         }
 
         //Search Button functionality...
-        private void button1_Click(object sender, EventArgs e)
+        private void searchButton_Click(object sender, EventArgs e)
         {
             AlbumsDAO albumsDAO = new AlbumsDAO();
 
@@ -79,7 +84,7 @@ namespace LemonWire
         }
 
         //Click event to add album information to the database...
-        private void button2_Click(object sender, EventArgs e)
+        private void addAlbumButton_Click(object sender, EventArgs e)
         {
             //Add a new item to the database
             Album album = new Album
@@ -94,6 +99,42 @@ namespace LemonWire
             AlbumsDAO albumsDAO = new AlbumsDAO();
             int result = albumsDAO.AddOneAlbum(album);
             MessageBox.Show(result + " new row(s) inserted.");
+        }
+
+        //Click event to delete a song from an album w/ validation...
+        private void deleteButton_Click(object sender, EventArgs e)
+        {
+            AlbumsDAO albumsDAO = new AlbumsDAO();
+            // Check if a row is selected in the DataGridView
+            if (dataGridView2.SelectedRows.Count > 0)
+            {
+                //Get the selected row
+                DataGridViewRow selectedRow = dataGridView2.SelectedRows[0];
+
+                //Get the songId from the selected row's "ID" column
+                if (int.TryParse(selectedRow.Cells["ID"].Value.ToString(), out int songID))
+                {
+                    JObject songIDObject = new JObject(new JProperty("ID", songID));
+
+                    //Call the DeleteSong method to delete the song
+                    albumsDAO.DeleteSong(songIDObject, connectionString);
+
+                    //Display a success message
+                    MessageBox.Show("Song deleted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    albumBindingSource.DataSource = albumsDAO.GetAllAlbums();
+
+                    dataGridView1.DataSource = albumBindingSource;
+                }
+                else
+                {
+                    MessageBox.Show("Invalid Song ID.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a row to delete.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

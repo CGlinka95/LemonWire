@@ -111,5 +111,43 @@ namespace LemonWire
             //Return the new rows
             return newRows;
         }
+
+        //Fetch all songs related to albumID...
+        public List<Song> GetSongsForAlbum(int albumID)
+        {
+            //Start with an empty list
+            List<Song> returnList = new List<Song>();
+
+            //Connect to the mysql server
+            MySqlConnection connection = new MySqlConnection(connectionString);
+            connection.Open();
+
+            //FETCH ALL Songs where the ID from Albums table is equal to albums_ID from Songs table
+            MySqlCommand command = new MySqlCommand();
+            command.CommandText = "SELECT * FROM SONGS WHERE albums_ID = @albumID";
+            command.Parameters.AddWithValue("@albumID", albumID);
+            command.Connection = connection;
+
+            using (MySqlDataReader reader = command.ExecuteReader()) //MySqlDataReader is the RESULT of executing the command that is defined in line 22.
+            {
+                //Loop until all Albums have been retrieved from the list
+                while (reader.Read())
+                {
+                    Song songInList = new Song
+                    {
+                        ID = reader.GetInt32(0),
+                        SongTitle = reader.GetString(1),
+                        Number = reader.GetInt32(2),
+                        VideoURL = reader.GetString(3),
+                        Lyrics = reader.GetString(4),
+                    };
+                    returnList.Add(songInList);
+                }
+            }
+            //Best practise to always Close the connection like so...
+            connection.Close();
+
+            return returnList;
+        }
     }
 }

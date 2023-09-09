@@ -4,6 +4,7 @@ namespace LemonWire
     {
         //BindingSource is the ability to connect a List of items, such as albums, to the grid control on the frontend.
         BindingSource albumBindingSource = new BindingSource();
+        BindingSource songBindingSource = new BindingSource();
 
         public Form1()
         {
@@ -66,6 +67,15 @@ namespace LemonWire
             //MessageBox.Show("URL=" + imageURL);
 
             pictureBox1.Load(imageURL);
+
+            //Redefine albumsDAO inside this object
+            AlbumsDAO albumsDAO = new AlbumsDAO();
+
+            //Connect the list to the grid view control
+            //Look for the rowClicked variable from line 59 and explicitly cast it to an int so that we can use the result
+            songBindingSource.DataSource = albumsDAO.GetSongsForAlbum((int)dataGridView.Rows[rowClicked].Cells[0].Value);
+
+            dataGridView2.DataSource = songBindingSource;
         }
 
         //Click event to add album information to the database...
